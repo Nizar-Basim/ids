@@ -1,0 +1,74 @@
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class AESExample {
+    public static void main(String[] args) {
+        try {
+            // Create a scanner object to read user input
+            Scanner scanner = new Scanner(System.in);
+
+            // Prompt the user to enter the plaintext message
+            System.out.print("Enter plaintext message: ");
+            String plaintext = scanner.nextLine();
+
+            // Prompt the user to enter the secret key (128 bits)
+            System.out.print("Enter secret key (16 bytes): ");
+            byte[] key = scanner.nextLine().getBytes();
+
+            // Encrypt the plaintext message
+            byte[] encryptedBytes = encrypt(plaintext, key);
+
+            // Convert the encrypted bytes to a Base64-encoded string for easier display
+            String encryptedText = Base64.getEncoder().encodeToString(encryptedBytes);
+
+            // Output the encrypted message
+            System.out.println("Encrypted message: " + encryptedText);
+
+            // Decrypt the encrypted message
+            String decryptedText = decrypt(encryptedBytes, key);
+
+            // Output the decrypted message
+            System.out.println("Decrypted message: " + decryptedText);
+
+            // Close the scanner
+            scanner.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Function to encrypt plaintext using AES-128
+    public static byte[] encrypt(String plaintext, byte[] key) throws Exception {
+        // Create AES cipher instance
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+
+        // Generate secret key spec
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+
+        // Initialize cipher in encryption mode with the secret key
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+
+        // Perform encryption
+        return cipher.doFinal(plaintext.getBytes());
+    }
+
+    // Function to decrypt ciphertext using AES-128
+    public static String decrypt(byte[] ciphertext, byte[] key) throws Exception {
+        // Create AES cipher instance
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+
+        // Generate secret key spec
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+
+        // Initialize cipher in decryption mode with the secret key
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+
+        // Perform decryption
+        byte[] decryptedBytes = cipher.doFinal(ciphertext);
+
+        // Convert decrypted bytes to string and return
+        return new String(decryptedBytes);
+    }
+}
