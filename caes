@@ -1,0 +1,57 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+// Function to encrypt the message
+string encrypt(string message, int shift) {
+    string encrypted_message = "";
+
+    // Iterate through each character in the message
+    for (int i = 0; i < message.length(); ++i) {
+        char ch = message[i];
+
+        // Encrypt only alphabetic characters
+        if (isalpha(ch)) {
+            // Determine whether to shift forward or backward and handle wrapping
+            char shifted_char = isupper(ch) ? ((ch - 'A' + shift) % 26) + 'A' : ((ch - 'a' + shift) % 26) + 'a';
+            encrypted_message += shifted_char;
+        } else {
+            // Leave non-alphabetic characters unchanged
+            encrypted_message += ch;
+        }
+    }
+
+    return encrypted_message;
+}
+
+// Function to decrypt the message
+string decrypt(string message, int shift) {
+    // Decryption is essentially the same as encryption, but with a negative shift
+    return encrypt(message, -shift);
+}
+
+int main() {
+    string message;
+    int shift;
+
+    // Input message and shift amount
+    cout << "Enter message: ";
+    getline(cin, message);
+
+    cout << "Enter shift amount (0-25): ";
+    cin >> shift;
+
+    // Ensure shift is within the range
+    shift = shift % 26;
+
+    // Encrypt and display the encrypted message
+    string encrypted_message = encrypt(message, shift);
+    cout << "Encrypted message: " << encrypted_message << endl;
+
+    // Decrypt and display the decrypted message
+    string decrypted_message = decrypt(encrypted_message, shift);
+    cout << "Decrypted message: " << decrypted_message << endl;
+
+    return 0;
+}
