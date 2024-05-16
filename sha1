@@ -1,0 +1,44 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
+
+public class SHA1Example {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+       
+        System.out.print("Enter message: ");
+        String message = scanner.nextLine();
+
+        try {
+            
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+
+          
+            digest.update(message.getBytes());
+
+            
+            byte[] hashedBytes = digest.digest();
+
+          
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hashedBytes) {
+                // Convert each byte to hexadecimal and append to the string
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+
+            System.out.println("SHA-1 hash: " + hexString.toString());
+        } catch (NoSuchAlgorithmException e) {
+            // Handle algorithm not found exception
+            System.err.println("SHA-1 algorithm not found.");
+            e.printStackTrace();
+        }
+
+    
+        scanner.close();
+    }
+}
