@@ -1,0 +1,116 @@
+import java.util.Scanner;
+
+public class RailFenceCipher {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input message and key (number of rails)
+        System.out.print("Enter message: ");
+        String message = scanner.nextLine();
+
+        System.out.print("Enter number of rails: ");
+        int rails = scanner.nextInt();
+
+        // Encrypt the message
+        String encryptedMessage = encrypt(message, rails);
+        System.out.println("Encrypted message: " + encryptedMessage);
+
+        // Decrypt the message
+        String decryptedMessage = decrypt(encryptedMessage, rails);
+        System.out.println("Decrypted message: " + decryptedMessage);
+
+        scanner.close();
+    }
+
+    // Function to encrypt the message using Rail Fence Cipher
+    public static String encrypt(String message, int rails) {
+        StringBuilder[] railMatrix = new StringBuilder[rails];
+
+        // Initialize rail matrix
+        for (int i = 0; i < rails; i++) {
+            railMatrix[i] = new StringBuilder();
+        }
+
+        // Populate rail matrix
+        int row = 0;
+        boolean down = true;
+        for (char ch : message.toCharArray()) {
+            railMatrix[row].append(ch);
+            if (down) {
+                row++;
+                if (row == rails - 1) {
+                    down = false;
+                }
+            } else {
+                row--;
+                if (row == 0) {
+                    down = true;
+                }
+            }
+        }
+
+        // Concatenate rows to get encrypted message
+        StringBuilder encryptedMessage = new StringBuilder();
+        for (StringBuilder rail : railMatrix) {
+            encryptedMessage.append(rail);
+        }
+        return encryptedMessage.toString();
+    }
+
+    // Function to decrypt the message using Rail Fence Cipher
+    public static String decrypt(String message, int rails) {
+        StringBuilder[] railMatrix = new StringBuilder[rails];
+
+        // Initialize rail matrix
+        for (int i = 0; i < rails; i++) {
+            railMatrix[i] = new StringBuilder();
+        }
+
+        // Calculate the length of each rail
+        int[] railLengths = new int[rails];
+        int fullLength = message.length();
+        int remainder = fullLength % (2 * (rails - 1));
+        int quotient = fullLength / (2 * (rails - 1));
+        for (int i = 0; i < rails; i++) {
+            if (i == 0 || i == rails - 1) {
+                railLengths[i] = quotient;
+            } else {
+                railLengths[i] = 2 * quotient;
+            }
+            if (i < remainder) {
+                railLengths[i]++;
+            }
+        }
+
+        // Fill the rail matrix with the message
+        int index = 0;
+        for (int i = 0; i < rails; i++) {
+            for (int j = 0; j < railLengths[i]; j++) {
+                railMatrix[i].append(message.charAt(index));
+                index++;
+            }
+        }
+
+        // Read the decrypted message from the rail matrix
+        StringBuilder decryptedMessage = new StringBuilder();
+        row = 0;
+        down = true;
+        for (int i = 0; i < fullLength; i++) {
+            decryptedMessage.append(railMatrix[row].charAt(0));
+            railMatrix[row].deleteCharAt(0);
+            if (down) {
+                row++;
+                if (row == rails - 1) {
+                    down = false;
+                }
+            } else {
+                row--;
+                if (row == 0) {
+                    down = true;
+                }
+            }
+        }
+
+        return decryptedMessage.toString();
+    }
+}
