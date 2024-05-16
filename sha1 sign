@@ -1,0 +1,38 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Scanner;
+
+public class sha1sign{
+    public static void main(String[] args) {
+        
+        Scanner scanner = new Scanner(System.in);
+
+     
+        System.out.print("Enter the message to be signed: ");
+        String message = scanner.nextLine();
+
+        try {
+        
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+
+            
+            digest.update(message.getBytes());
+
+          
+            byte[] hashedBytes = digest.digest();
+
+          
+            System.out.print("Digital Signature (SHA-1): ");
+            for (byte b : hashedBytes) {
+                System.out.printf("%02x", b); // Print each byte in hexadecimal format
+            }
+        } catch (NoSuchAlgorithmException e) {
+            
+            System.err.println("SHA-1 algorithm not found.");
+            e.printStackTrace();
+        }
+
+        
+        scanner.close();
+    }
+}
