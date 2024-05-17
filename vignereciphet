@@ -1,0 +1,70 @@
+import java.util.Scanner;
+
+public class VigenereCipher {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input plaintext message and key
+        System.out.print("Enter the plaintext message: ");
+        String plaintext = scanner.nextLine().toUpperCase();
+
+        System.out.print("Enter the key: ");
+        String key = scanner.nextLine().toUpperCase();
+
+        // Encrypt the plaintext
+        String encryptedMessage = encrypt(plaintext, key);
+        System.out.println("Encrypted message: " + encryptedMessage);
+
+        // Decrypt the ciphertext
+        String decryptedMessage = decrypt(encryptedMessage, key);
+        System.out.println("Decrypted message: " + decryptedMessage);
+
+        scanner.close();
+    }
+
+    public static String encrypt(String plaintext, String key) {
+        StringBuilder encryptedMessage = new StringBuilder();
+        key = expandKey(plaintext, key);
+
+        for (int i = 0; i < plaintext.length(); i++) {
+            char p = plaintext.charAt(i);
+            char k = key.charAt(i);
+
+            if (Character.isLetter(p)) {
+                char e = (char) ((p + k - 2 * 'A') % 26 + 'A');
+                encryptedMessage.append(e);
+            } else {
+                encryptedMessage.append(p);  // Non-letter characters are not encrypted
+            }
+        }
+
+        return encryptedMessage.toString();
+    }
+
+    public static String decrypt(String ciphertext, String key) {
+        StringBuilder decryptedMessage = new StringBuilder();
+        key = expandKey(ciphertext, key);
+
+        for (int i = 0; i < ciphertext.length(); i++) {
+            char c = ciphertext.charAt(i);
+            char k = key.charAt(i);
+
+            if (Character.isLetter(c)) {
+                char p = (char) ((c - k + 26) % 26 + 'A');
+                decryptedMessage.append(p);
+            } else {
+                decryptedMessage.append(c);  // Non-letter characters are not decrypted
+            }
+        }
+
+        return decryptedMessage.toString();
+    }
+
+    private static String expandKey(String text, String key) {
+        StringBuilder expandedKey = new StringBuilder(key);
+        while (expandedKey.length() < text.length()) {
+            expandedKey.append(key);
+        }
+        return expandedKey.substring(0, text.length());
+    }
+}
